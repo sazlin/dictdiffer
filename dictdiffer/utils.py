@@ -258,15 +258,22 @@ def are_different(first, second, tolerance):
     are different.
     In all other cases, the difference is straight forward.
     """
-    if first == second:
-        # values are same - simple case
-        return False
-    elif bool(first != first) ^ bool(second != second):
-        # only one of them is 'NaN', hence they are different
+    # TODO: switch to using args and plumb through
+    check_type = True
+    check_value = False
+
+    if check_type and type(first) != type(second):
         return True
-    elif isinstance(first, num_types) and isinstance(second, num_types):
-        # (a) two numerical values are compared with tolerance
-        # (b) both values are NaN and they will never fit the tolerance
-        return abs(first-second) > tolerance * max(abs(first), abs(second))
+    if check_value:
+        if first == second:
+            # values are same - simple case
+            return False
+        elif bool(first != first) ^ bool(second != second):
+            # only one of them is 'NaN', hence they are different
+            return True
+        elif isinstance(first, num_types) and isinstance(second, num_types):
+            # (a) two numerical values are compared with tolerance
+            # (b) both values are NaN and they will never fit the tolerance
+            return abs(first-second) > tolerance * max(abs(first), abs(second))
     # we got different values
-    return True
+    return check_value
